@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Floodwater Analysis</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <script src="https://code.earthengine.google.com/earthengine-api.js"></script>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            z-index: 1000;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        #loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: bold;
+            color: blue;
+        }
+    </style>
+    <script>
+        var map;
+        var markers = [];
+        
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 13.0827, lng: 80.2707},
+                zoom: 10
+            });
+            loadFloodData();
+            fetchRealTimeData();
+        }
+
+        function loadFloodData() {
+            var floodData = ee.ImageCollection('NASA/GPM_L3/IMERG_V06')
+                .filterDate('2023-09-01', '2023-09-30')
+                .mean();
+            var visParams = {
+                min: 0,
+                max: 300,
+                palette: ['blue', 'green', 'yellow', 'red']
+            };
+            var layer = ui.Map.Layer(floodData, visParams, 'Flood Data');
+            map.addLayer(layer);
+        }
+
+        function fetchRealTimeData() {
+            document.getElementById('loading').style.display = 'block';
+            fetch('YOUR_API_ENDPOINT')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    updateMap(data);
+                    document.getElementById('loading').style.display = 'none';
+                    updateTimestamp(data.timestamp);
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
+
+        function updateMap(data) {
+            clearMarkers();
+            data.forEach(point => {
+                var marker = new google.maps.Marker({
+                    position: {lat: point.latitude, lng: point.longitude},
+                    map: map,
+                    title: `Water Level: ${point.water_level}m`
+                });
+                var infoWindow = new google.maps.InfoWindow({
+                    content: `<div><strong>Location:</strong> ${point.location}<br><strong>Water Level:</strong> ${point.water_level}m</div>`
+                });
+                marker.addListener('click', function() {
+                    infoWindow.open(map, marker);
+                });
+                markers.push(marker);
+            });
+        }
+
+        function clearMarkers() {
+            markers.forEach(marker => {
+                marker.setMap(null);
+            });
+            markers = [];
+        }
+
+        function addRefreshButton() {
+            var button = document.createElement('button');
+            button.textContent = 'Refresh Data';
+            button.onclick = function() {
+                fetchRealTimeData();
+            };
+            document.getElementById('info').appendChild(button);
+        }
+
+        function updateTimestamp(timestamp) {
+            var timestampDiv = document.createElement('div');
+            timestampDiv.textContent = `Last Updated: ${new Date(timestamp).toLocaleString()}`;
+            document.getElementById('info').appendChild(timestampDiv);
+        }
+
+        window.onload = function() {
+            initMap();
+            addRefreshButton();
+        };
+    </script>
+</head>
+<body>
+    <div id="info">Real-Time Floodwater Analysis</div>
+    <div id="loading">Loading data...</div>
+    <div id="map"></div>
+</body>
+</html>
