@@ -1,8 +1,53 @@
 <html>
     <head>
-        <title> My Website</title>
+        <title> Question 1</title>
     </head>
-    <body text="green" > 
-        <h2><i>Rakshan</i></h2>
+    <body>
+        <form>
+            <h1>Course Enrollment Form:</h1>
+            <fieldset>
+                Section 1: Personal Information Section<br><br>
+                Enter your Name: <input type="text" id="n" name="name"> <br><br>
+                Enter your ID: <input type="text" id="id" name="StudentID" pattern="A-Za-z0-9" required><br><br>
+                Enter email: <input type="email" id="em" name="email" required><br><br>
+                Year of Study:<br>
+                <input type="radio" id="r1" name="year" value="1">1st year<br>
+                <input type="radio" id="r2" name="year" value="2">2nd year<br>
+                <input type="radio" id="r3" name="year" value="3">3rd year<br>
+                <input type="radio" id="r4" name="year" value="4">Final year<br>
+            </fieldset><br>
+            <fieldset>
+                Section 2: Academic Information Section<br><br>
+                <label for="c">Select Your Course:</label>
+                <select id="c">
+                    <option value="CSE">CSE</option>
+                    <option value="ECE">ECE</option>
+                    <option value="MECH">MECH</option>
+                    <option value="CIVIL">CIVIL</option>
+                </select><br>
+                Available Courses: <br>
+                <input type="checkbox" id="c1" name="course1" value="OS" multiple>OS<br>
+                <input type="checkbox" id="c2" name="course2" value="CAO" multiple>CAO<br>
+                <input type="checkbox" id="c3" name="course3" value="TOC" multiple>TOC<br>
+                <input type="checkbox" id="c4" name="course4" value="DSA" multiple>DSA<br>
+                <input type="checkbox" id="c5" name="course5" value="DBMS" multiple>DBMS<br>
+                <input type="checkbox" id="c6" name="course6" value="JAVA" multiple>JAVA<br>
+                <input type="checkbox" id="c7" name="course7" value="PYTHON" multiple>PYTHON<br>
+                <p>Hold Ctrl (or Cmd) to select multiple courses</p>
+            </fieldset><br>
+            <fieldset><br>
+                Section 3: Additional Information Section<br><br>
+                Please Enter Your Statement of Purpose:<br><br>
+                <textarea rows="15" cols="25" maxlength="300">Statement of Purpose</textarea><br><br>
+                Upload Student ID Proof: <input type="file" id="f1" name="file"><br><br>
+                Mode of Study:<br>
+                <input type="radio" id="m1" name="mode" value="online">Online<br>
+                <input type="radio" id="m2" name="mode" value="offline">Offline<br><br><br>
+                <input type="checkbox" id="t1" name="terms" value="agreed" required>Term and Conditions<br>
+
+            </fieldset><br>
+            <button type="submit">Submit</button><br><br>
+            <button type="reset">Reset</button>
+        </form>
     </body>
 </html>
